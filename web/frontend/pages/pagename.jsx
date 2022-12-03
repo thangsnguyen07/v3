@@ -1,7 +1,25 @@
 import { Card, Page, Layout, TextContainer, Heading } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
+import { useAppQuery } from "../hooks/useAppQuery";
 
 export default function PageName() {
+  const {
+    data,
+    refetch: refetchProductCount,
+    isLoading: isLoadingCount,
+    isRefetching: isRefetchingCount,
+  } = useAppQuery({
+    url: "/api/products/tags",
+    reactQueryOptions: {
+      onSuccess: () => {
+        //  setIsLoading(false);
+        console.log("fetch success");
+      },
+      onError: () => {
+        console.log("fetch error");
+      },
+    },
+  });
   return (
     <Page>
       <TitleBar
