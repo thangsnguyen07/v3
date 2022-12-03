@@ -10,7 +10,7 @@ export const QUERY_GET_PRODUCTS = gql`
       nodes {
         id
         createdAt
-        customProductType
+        productType
         defaultCursor
         description
         descriptionHtml

@@ -11,7 +11,7 @@ import productCreator from "./helpers/product-creator.js";
 import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 import { AppInstallations } from "./app_installations.js";
-import { getProductTags } from "./services/product.service.js";
+import { getProducts, getProductTags } from "./services/product.service.js";
 
 const USE_ONLINE_TOKENS = false;
 
@@ -143,7 +143,12 @@ export async function createServer(
     res.status(status).send({ success: status === 200, error });
   });
 
-  app.get("/api/products/tags", async (req, res) => {
+  // All endpoints after this point will have access to a request.body
+  // attribute, as a result of the express.json() middleware
+  app.use(express.json());
+
+  // api
+  app.post("/api/products/tags", async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
       res,
@@ -153,7 +158,8 @@ export async function createServer(
     let error = null;
 
     try {
-      const data = await getProductTags(session, 10);
+      const { first } = req.body;
+      const data = await getProductTags(session, first);
       return res.status(200).send(data.body);
     } catch (e) {
       console.log(`Failed to process products/tags: ${e.message}`);
@@ -163,9 +169,26 @@ export async function createServer(
     res.status(status).send({ success: status === 200, error });
   });
 
-  // All endpoints after this point will have access to a request.body
-  // attribute, as a result of the express.json() middleware
-  app.use(express.json());
+  app.post("/api/products", async (req, res) => {
+    const session = await Shopify.Utils.loadCurrentSession(
+      req,
+      res,
+      app.get("use-online-tokens")
+    );
+    let status = 200;
+    let error = null;
+
+    try {
+      const { first } = req.body;
+      const data = await getProducts(session, first);
+      return res.status(200).send(data.body);
+    } catch (e) {
+      console.log(`Failed to process products/tags: ${e.message}`);
+      status = 500;
+      error = e.message;
+    }
+    res.status(status).send({ success: status === 200, error });
+  });
 
   app.use((req, res, next) => {
     const shop = Shopify.Utils.sanitizeShop(req.query.shop);

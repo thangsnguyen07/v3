@@ -20,13 +20,11 @@
       "constants/*": ["constants/*"],
       "containers/*": ["containers/*"],
       "components/*": ["components/*"],
-      "services/*": ["../services/*"],
       "store/*": ["store/*"],
       "utils/*": ["utils/*"],
       "types": ["types"],
     },
     "types": ["vite/client"]
   },
-  "include": ["./", "../services"],
-  "exclude": ["node_modules"]
+  "include": ["./"],
 }

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./**/*.{js,jsx,ts,tsx}', './index.html'],
+  content: ['./*.{js,jsx,ts,tsx}', './index.html'],
   safelist: ['rdg-row-even'],
 
   theme: {
